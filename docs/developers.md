@@ -14,10 +14,10 @@ git clone --recursive https://github.com/seedsigner/seedsigner-settings-generato
     <summary>Note: If you don't include `--recursive`...</summary>
     You'll need to make two follow-up calls:
 
-    ```bash
-    git submodule init
-    git submodule update --remote
-    ```
+```bash
+git submodule init
+git submodule update --remote
+```
 </details>
 
 You should now have a complete copy of this repo AND the SeedSigner repo in your `src/` subdir.
@@ -27,6 +27,11 @@ You should now have a complete copy of this repo AND the SeedSigner repo in your
 We rely on a python script that uses a Jinja2 template to generate the static `index.html`. So you'll need to set up a new python3 `virtualenv` (plenty of python3 virtualenv guides you can follow) and install the Jinja2 dependencies:
 ```bash
 pip install -r requirements.txt
+```
+
+We also need the main SeedSigner code installed in our virtualenv:
+```bash
+pip install -e src/seedsigner
 ```
 
 
@@ -41,16 +46,11 @@ Change the `url` and `branch` as needed:
 ```
 [submodule "src/seedsigner"]
 	path = src/seedsigner
-	url = https://github.com/seedsigner/seedsigner.git
-	branch = dev
+	url = https://github.com/my_user/seedsigner.git
+	branch = my_branch
 ```
 
-Once your changes are made, you need to tell `git` to pull the new repo or branch:
-```
-git submodule update --remote
-```
-
-And then any time there are further changes in the `SettingsDefinition` in your target fork/branch, you'll need to repeat the above `update` call to pull in those changes.
+The `generate.sh` script in the next step will automatically update the submodule to your specified fork and branch.
 
 
 ## Generate updated `index.html`
@@ -60,7 +60,7 @@ cd src
 ./generate.sh
 ```
 
-The script tells `SettingsDefinition` to extract itself to json and then calls the `src/parse_settings_json.py` python script to read the settings in and generate the final static `index.html` that gets written to the `docs/` dir.
+The script runs `src/parse_settings_json.py` which extracts SeedSigner's `SettingsDefinition`. That is then used to generate the final static `index.html` that gets written to the `docs/` dir.
 
 *Note: Why are the static web files in the `docs/` subdir (a better place would be something like a `www/` subdir)? A limitation in Github Pages only lets us host the static website from either the repo root or from a hard-coded `docs/` subdir.*
 
